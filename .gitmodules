@@ -7,6 +7,7 @@
 [submodule "dep/distorm3"]
 	path = dep/distorm3
 	url = https://github.com/gdabah/distorm
+	ignore = dirty
 [submodule "docs"]
 	path = docs
 	url = git@gitlab.com:METIS/egalito/egalito-docs.git
