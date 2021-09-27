@@ -8,6 +8,13 @@ variables:
     ARM_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/egalito/arm
     DOCKER_DIR: ./test/docker
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
 stages:
   - check-format
   - build
@@ -42,13 +49,16 @@ check-format:
       use is EXACTLY version 6.0.0. This is available in Ubuntu 18 by default.
       ================================================================================
       EOF
-  except:
-    - merge_requests
+  rules:
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
 
 check-format-merge:
   stage: check-format
   image: $UBUNTU18_IMAGE
   script:
+    - git fetch --unshallow
     - pre-commit install-hooks
     - pre-commit run --show-diff-on-failure --from-ref $CI_MERGE_REQUEST_TARGET_BRANCH_NAME --to-ref HEAD
     - |+
@@ -70,9 +80,9 @@ check-format-merge:
       use is EXACTLY version 6.0.0. This is available in Ubuntu 18 by default.
       ================================================================================
       EOF
-  only:
-    - merge_requests
 
+  rules:
+    if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 .build-template: &build-template
   stage: build
@@ -86,6 +96,8 @@ check-format-merge:
   # fill in the build image
   script:
     - make -j 8
+  rules:
+    when: always
 
 build-ubuntu18:
   <<: *build-template
