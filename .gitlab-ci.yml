@@ -58,7 +58,7 @@ check-format-merge:
   stage: check-format
   image: $UBUNTU18_IMAGE
   script:
-    - git fetch --unshallow
+    - git fetch origin +$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - pre-commit install-hooks
     - pre-commit run --show-diff-on-failure --from-ref $CI_MERGE_REQUEST_TARGET_BRANCH_NAME --to-ref HEAD
     - |+
