@@ -40,11 +40,14 @@ endif
 # directly use make to install to 'lib'
 CAPSTONE_INSTALL := $(abspath capstone/install)
 capstone:
-	@cd capstone \
-		&& rm -fr install \
-		&& git checkout $(capstone-VERSION) > /dev/null 2>&1 \
-		&& env CAPSTONE_ARCHS='x86 aarch64' $(MAKE) CROSS=$(CROSS2) \
-		&& env CAPSTONE_ARCHS='x86 aarch64' PREFIX=$(CAPSTONE_INSTALL) $(MAKE) CROSS=$(CROSS2) install
+	cd capstone && rm -fr install
+	# Gitlab CI doesn't like using git inside a job, so we're not,
+	# and instead of chosing the capstone version here we just use
+	# whatever's pinned in the submodule
+	cd capstone && \
+		env CAPSTONE_ARCHS='x86 aarch64' $(MAKE) CROSS=$(CROSS2)
+	cd capstone && \
+		env CAPSTONE_ARCHS='x86 aarch64' PREFIX=$(CAPSTONE_INSTALL) $(MAKE) CROSS=$(CROSS2) install
 
 ifeq ($(USE_KEYSTONE),1)
 keystone:
