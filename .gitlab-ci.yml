@@ -80,9 +80,8 @@ check-format-merge:
       use is EXACTLY version 6.0.0. This is available in Ubuntu 18 by default.
       ================================================================================
       EOF
-
   rules:
-    if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 .build-template: &build-template
   stage: build
@@ -97,7 +96,7 @@ check-format-merge:
   script:
     - make -j 8
   rules:
-    when: always
+    - when: always
 
 build-ubuntu18:
   <<: *build-template
