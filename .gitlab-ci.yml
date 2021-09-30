@@ -123,6 +123,12 @@ build-debian:
     - cd test/codegen
     - make test
 
+.script-test-template: &script-test-template
+  stage: test
+  script:
+    - cd test/script
+    - make test
+
 unit-test-ubuntu18:
   <<: *unit-test-template
   needs: [build-ubuntu18]
@@ -130,6 +136,11 @@ unit-test-ubuntu18:
 
 codegen-test-ubuntu18:
     <<: *codegen-test-template
+    needs: [build-ubuntu18]
+    image: $UBUNTU18_IMAGE
+
+script-test-ubuntu18:
+    <<: *script-test-template
     needs: [build-ubuntu18]
     image: $UBUNTU18_IMAGE
 
@@ -143,6 +154,11 @@ codegen-test-ubuntu20:
     needs: [build-ubuntu20]
     image: $UBUNTU20_IMAGE
 
+script-test-ubuntu20:
+    <<: *script-test-template
+    needs: [build-ubuntu20]
+    image: $UBUNTU20_IMAGE
+
 unit-test-debian:
   <<: *unit-test-template
   needs: [build-debian]
@@ -150,5 +166,10 @@ unit-test-debian:
 
 codegen-test-debian:
     <<: *codegen-test-template
+    needs: [build-debian]
+    image: $DEBIAN_IMAGE
+
+script-test-debian:
+    <<: *script-test-template
     needs: [build-debian]
     image: $DEBIAN_IMAGE
