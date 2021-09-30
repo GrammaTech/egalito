@@ -22,25 +22,26 @@ aarch64_only(){
     fi
 }
 
-test_scripts='./hello.sh \
-	./argv.sh \
-	./islower.sh \
-	./jumptable-rtl.sh \
-	"jumptable-libc.sh $(arch_dep)" \
-	./environ.sh \
-	./codeform.sh \
-	./dwarf-diff.sh \
-	./codeform-dwarf-syms.sh \
-	./codeform-s.sh \
-	./verify-redzone.sh \
-	./codeform-debloat.sh \
-	./hello-process.sh \
-	./hello-thread.sh \
-	./nginx.sh \
-	./nginx-thread.sh \
-    $(x86_only "./coreutils.sh") \
-	./cout.sh \
-	./sandbox-stage3.sh'
+test_scripts="\
+./hello.sh \
+./argv.sh \
+./islower.sh \
+./jumptable-rtl.sh \
+jumptable-libc.sh $(arch_dep) \
+./environ.sh \
+./codeform.sh \
+./dwarf-diff.sh \
+./codeform-dwarf-syms.sh \
+./codeform-s.sh \
+./verify-redzone.sh \
+./codeform-debloat.sh \
+./hello-process.sh \
+./hello-thread.sh \
+./nginx.sh \
+./nginx-thread.sh \
+$(x86_only ./coreutils.sh) \
+./cout.sh \
+./sandbox-stage3.sh"
 
 for _test in $test_scripts;
 do
