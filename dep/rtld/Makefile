@@ -16,9 +16,7 @@ LIBC = $(shell readlink -f $(shell $(CC) --print-file-name=libc.so.6))
 RUN_GDB = $(GDB) -n -q -x reconstruct.py
 # Hack to find symbol info on Ubuntu 20
 ifneq ($(wildcard /usr/lib/x86_64-linux-gnu/libc-2.31.so), )
-RUN_GDB_SYMBOL := -x symbol.gdb
-else
-RUN_GDB_SYMBOL := ""
+RUN_GDB += -x symbol.gdb
 endif
 
 GDB_GEN_FILES = rtld.h assign1.c assign2.c generate1.c generate2.c
@@ -54,9 +52,8 @@ $(BUILDDIR)rtld_global_size: $(BUILDDIR)interpreter
 $(BUILDDIR)rtld_global_ro_size: $(BUILDDIR)interpreter
 	$(READELF) $(READELF_FLAGS) --dyn-syms $(shell cat $(BUILDDIR)interpreter) | grep rtld_global_ro@ | awk '{ print $$3 }' > $@
 
-
 $(BUILDDIR)rtld.h: | depends
-	$(RUN_GDB) $(RUN_GDB_SYMBOL) -x rtld.gdb $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' \
+	$(RUN_GDB) -x rtld.gdb $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' \
 		| sed 's/struct rtld/struct my_rtld/' > $@
 $(BUILDDIR)pthread.h: | depends
 	$(RUN_GDB) -x pthread.gdb $(LIBC) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' \
