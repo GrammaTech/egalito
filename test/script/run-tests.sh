@@ -16,14 +16,13 @@ x86_only(){
     fi
 }
 
-aarch64_only()[
+aarch64_only(){
     if [ $(uname -p) == "aarch64" ]; then
     echo ${1}
-    else
     fi
-]
+}
 
-test_scripts=(./hello.sh \
+test_scripts='./hello.sh \
 	./argv.sh \
 	./islower.sh \
 	./jumptable-rtl.sh \
@@ -41,13 +40,12 @@ test_scripts=(./hello.sh \
 	./nginx-thread.sh \
     $(x86_only "./coreutils.sh") \
 	./cout.sh \
-	./sandbox-stage3.sh
-)
+	./sandbox-stage3.sh'
 
-for _test in test_scripts
+for _test in $test_scripts;
 do
-    if $_test
-    then
+    echo $_test
+    if [[ $_test ]]; then
     TESTS_PASSED += 1;
     fi
 done
