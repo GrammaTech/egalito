@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#! /usr/bin/env bash
 
 TESTS_PASSED=0
 
@@ -46,8 +46,8 @@ $(x86_only ./coreutils.sh) \
 for _test in $test_scripts;
 do
     echo $_test
-    if [[ $_test ]]; then
-    TESTS_PASSED += 1;
+    if $_test; then
+	    ((TESTS_PASSED++))
     fi
 done
 
