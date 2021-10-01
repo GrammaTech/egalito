@@ -21,9 +21,9 @@ workflow:
 default:
   before_script:
     - |+ 
-    echo -e '[url "https://github.com/"]\n    insteadOf = "git@github.com:"' >> ~/.gitconfig
-    echo -e '[url "https://gitlab.com/"]\n    insteadOf = "git@gitlab.com:"' >> ~/.gitconfig
-    echo -e '[url "..""]\n    insteadOf = "git@gitlab.com:METIS/egalito"' >> ~/.gitconfig
+      echo -e '[url "https://github.com/"]\n    insteadOf = "git@github.com:"' >> ~/.gitconfig
+      echo -e '[url "https://gitlab.com/"]\n    insteadOf = "git@gitlab.com:"' >> ~/.gitconfig
+      echo -e '[url "..""]\n    insteadOf = "git@gitlab.com:METIS/egalito"' >> ~/.gitconfig
     - git submodule update --init --recursive
 
 
