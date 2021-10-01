@@ -19,3 +19,5 @@ repos:
     rev: master
     hooks:
       - id: clang-format
+
+exclude: ^(?!(src/gtirb/))
