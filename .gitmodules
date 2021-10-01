@@ -1,16 +1,16 @@
 [submodule "test/binary"]
 	path = test/binary
-	url = ../egalito-tests.git
+	url = git@gitlab.com:METIS/egalito/egalito-tests
 [submodule "dep/capstone"]
 	path = dep/capstone
-	url = ../egalito-capstone.git
+	url = git@gitlab.com:METIS/egalito/egalito-capstone
 [submodule "dep/distorm3"]
 	path = dep/distorm3
-	url = https://github.com/gdabah/distorm.git
+	url = https://github.com/gdabah/distorm
 	ignore = dirty
 [submodule "docs"]
 	path = docs
-	url = ../egalito-docs.git
+	url = git@gitlab.com:METIS/egalito/egalito-docs.git
 [submodule "dep/keystone"]
 	path = dep/keystone
-	url = https://github.com/keystone-engine/keystone.git
+	url = git@github.com:keystone-engine/keystone.git
