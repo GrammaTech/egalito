@@ -44,13 +44,18 @@ $(x86_only ./coreutils.sh) \
 ./cout.sh \
 ./sandbox-stage3.sh"
 
+all_passed=0
 for _test in $test_scripts;
 do
 	((NTESTS++))
     echo $_test
     if $_test; then
 	    ((TESTS_PASSED++))
+    else
+	    all_passed=1
     fi
 done
 
 echo "${TESTS_PASSED} tests passed out of ${NTESTS}\n"
+
+exit $all_passed
