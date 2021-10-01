@@ -22,7 +22,6 @@ default:
   before_script:
     - git config --global url.https://github.com/.insteadOf  "git@github.com:"
     - git config --global url.https://gitlab.com/.insteadOf  "git@gitlab.com:"
-    - git config --global url....insteadOf "git@gitlab.com:METIS/egalito" 
     - git submodule update --init --recursive
 
 
