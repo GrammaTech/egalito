@@ -41,6 +41,8 @@ endif
 CAPSTONE_INSTALL := $(abspath capstone/install)
 capstone:
 	cd capstone && rm -fr install
+	# Original build system checked out a specific version of capstone
+	# for aarch64 vs other architectures.
 	# Gitlab CI doesn't like using git inside a job, so we're not,
 	# and instead of chosing the capstone version here we just use
 	# whatever's pinned in the submodule
