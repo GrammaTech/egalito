@@ -12,6 +12,7 @@ define arch_dep
 $(if $(filter x86_64,$(P_ARCH)), $1 x86_64-debian, $1 aarch64-openSuSE)
 endef
 
+.ONESHELL:
 .PHONY: test
 test:
 	./hello.sh
