@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
 TESTS_PASSED=0
+NTESTS=0
 
 arch_dep(){
     if [ $(uname -p) == "x86_64" ]; then
@@ -45,10 +46,11 @@ $(x86_only ./coreutils.sh) \
 
 for _test in $test_scripts;
 do
+	((NTESTS++))
     echo $_test
     if $_test; then
 	    ((TESTS_PASSED++))
     fi
 done
 
-echo "${TESTS_PASSED} tests passed out of ${#test_scripts}\n"
+echo "${TESTS_PASSED} tests passed out of ${NTESTS}\n"
