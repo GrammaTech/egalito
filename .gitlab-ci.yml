@@ -64,9 +64,9 @@ coverage:
       - coverage/
   image: $UBUNTU18_IMAGE
   script: 
-    - cd src
-    - ENABLE_COVERAGE=1 make -j 8 && cd -
-    - make -j 8
+    - cd dep && make all && cd -
+    - cd src && ENABLE_COVERAGE=1 make all -j 8 && cd -
+    - make all -j 8
     - lcov -c -i -d src/build_x86_64 -o base.info
     - cd test/script && make test && cd -
     - cd test/codegen && make test && cd -
