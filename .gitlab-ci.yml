@@ -28,8 +28,6 @@ stages:
   - check-format
   - build
   - test
-  # - package
-  # - deploy
 
 check-format:
   stage: check-format
@@ -37,7 +35,7 @@ check-format:
   allow_failure: true
   script:
     - pre-commit install-hooks
-    - pre-commit run --show-diff-on-failure --from-ref HEAD~ --to-ref HEAD
+    - pre-commit run --show-diff-on-failure
     # helper message for new committers
     - |+
       cat <<EOF
@@ -58,39 +56,6 @@ check-format:
       use is EXACTLY version 6.0.0. This is available in Ubuntu 18 by default.
       ================================================================================
       EOF
-  rules:
-    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
-      when: never
-    - if: '$CI_COMMIT_BRANCH'
-
-check-format-merge:
-  stage: check-format
-  image: $UBUNTU18_IMAGE
-  script:
-    - git fetch origin +$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
-    - pre-commit install-hooks
-    - pre-commit run --show-diff-on-failure --from-ref $CI_MERGE_REQUEST_TARGET_BRANCH_NAME --to-ref HEAD
-    - |+
-      cat <<EOF
-      ================================================================================
-      If this stage fails, the formatting of your changes may be incorrect.
-      To automatically format your files, install pre-commit:
-          pip3 install pre-commit
-          pre-commit install
-      pre-commit will now automatically format any files before commit.
-      To fix any misformatted files, run:
-          pre-commit run --all-files
-      And then commit any changes.
-      More information regarding pre-commit can be found at https://pre-commit.com.
-
-      NOTE FOR PROJECTS WITH C/C++ CODE:
-      pre-commit will by default use the correct version of every formatting tool
-      EXCEPT FOR clang-format. You need to ensure the version of clang-format you
-      use is EXACTLY version 6.0.0. This is available in Ubuntu 18 by default.
-      ================================================================================
-      EOF
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 .build-template: &build-template
   stage: build
