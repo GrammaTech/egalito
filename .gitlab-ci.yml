@@ -71,7 +71,7 @@ coverage:
     - lcov -c -i -d src/build_x86_64 -o base.info
     - cd test/script && make test && cd -
     - cd test/codegen && make test && cd -
-    - ce test/unit && ./runner && cd -
+    - cd test/unit && ./runner && cd -
     - lcov -c -d src/build_x86_64 -o test.info
     - lcov -a base.info -a test.info -o total.info
     - mkdir coverage
