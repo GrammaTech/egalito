@@ -57,6 +57,25 @@ check-format:
       ================================================================================
       EOF
 
+coverage: 
+  stage: build
+  artifacts:
+    path:
+      - coverage/
+  image: $UBUNTU18_IMAGE
+  script: 
+    - cd src && ENABLE_COVERAGE=1 make all -j 8 && cd -
+    - make all -j 8
+    - lcov -c -i -d src/build_x86_64 -o base.info
+    - cd test/script && make test && cd -
+    - cd test/codegen && make test && cd -
+    - ce test/unit && ./runner && cd -
+    - lcov -c -d src/build_x86_64 -o test.info
+    - lcov -a base.info -a test.info -o total.info
+    - mkdir coverage
+    - genhtml -o coverage total.info 
+
+    
 .build-template: &build-template
   stage: build
   artifacts:
