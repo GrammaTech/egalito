@@ -60,7 +60,7 @@ check-format:
 coverage: 
   stage: build
   artifacts:
-    path:
+    paths:
       - coverage/
   image: $UBUNTU18_IMAGE
   script: 
@@ -75,7 +75,7 @@ coverage:
     - mkdir coverage
     - genhtml -o coverage total.info 
 
-    
+
 .build-template: &build-template
   stage: build
   artifacts:
