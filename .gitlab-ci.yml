@@ -59,14 +59,15 @@ check-format:
 
 coverage: 
   stage: build
+  needs: []
   artifacts:
     paths:
       - coverage/
   image: $UBUNTU18_IMAGE
   script: 
     - cd dep && make all && cd -
-    - cd src && ENABLE_COVERAGE=1 make all -j 8 && cd -
-    - make all -j 8
+    - cd src && ENABLE_COVERAGE=1 make || ENABLE_COVERAGE=1 make -j 8 && cd -
+    - make all -j 8 
     - lcov -c -i -d src/build_x86_64 -o base.info
     - cd test/script && make test && cd -
     - cd test/codegen && make test && cd -
@@ -79,6 +80,7 @@ coverage:
 
 .build-template: &build-template
   stage: build
+  needs: []
   artifacts:
     paths:
       - app/
