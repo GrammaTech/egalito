@@ -60,6 +60,11 @@ DISTORM_A = ../dep/distorm3/distorm3.a
 DISTORM_SO = -L ../dep/distorm3/make/linux/ -ldistorm3 -Wl,-rpath,$(abspath ../dep/distorm3/make/linux)
 endif
 
+ifneq ($(ENABLE_COVERAGE), "")
+CXXFLAGS += -fprofile-arcs  -ftest-coverage
+CLDFLAGS += -lgcov
+endif
+
 BUILDTREE = $(sort $(dir $(ALL_OBJECTS)))
 
 LOADER = $(BUILDDIR)loader
