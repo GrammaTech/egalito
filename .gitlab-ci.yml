@@ -2,7 +2,6 @@ variables:
     GIT_STRATEGY: clone
     DEBIAN_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/debian_buster
     UBUNTU18_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/ubuntu18
-    UBUNTU20_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/ubuntu20
     # AARCH64_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/aarch64
     # ARM_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/egalito/arm
     DOCKER_DIR: ./test/docker
@@ -112,11 +111,6 @@ build-ubuntu18:
   <<: *build-template
   image: $UBUNTU18_IMAGE
 
-build-ubuntu20:
-  <<: *build-template
-  image: $UBUNTU20_IMAGE
-
-
 build-debian:
   <<: *build-template
   image: $DEBIAN_IMAGE
@@ -153,21 +147,6 @@ script-test-ubuntu18:
     <<: *script-test-template
     needs: [build-ubuntu18]
     image: $UBUNTU18_IMAGE
-
-unit-test-ubuntu20:
-  <<: *unit-test-template
-  needs: [build-ubuntu20]
-  image: $UBUNTU20_IMAGE
-
-codegen-test-ubuntu20:
-    <<: *codegen-test-template
-    needs: [build-ubuntu20]
-    image: $UBUNTU20_IMAGE
-
-script-test-ubuntu20:
-    <<: *script-test-template
-    needs: [build-ubuntu20]
-    image: $UBUNTU20_IMAGE
 
 unit-test-debian:
   <<: *unit-test-template
