@@ -15,13 +15,4 @@ endef
 .PHONY: test
 
 test:
-	-./run-build.sh -m hello 
-	-./run-build.sh -m jumptable
-	-./run-system.sh -m /bin/ls
-	-./run-system.sh -m /bin/cat
-	-./run-system.sh -m /bin/gzip
-	-./run-system.sh -m /bin/grep
-	-./run-system.sh -m /usr/bin/env
-	-./run-system.sh -m /usr/bin/make
-	-./run-system.sh -m /usr/bin/dpkg
-	-./run-system.sh -m /usr/bin/find
+	./run-tests.sh

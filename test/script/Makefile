@@ -14,25 +14,7 @@ endef
 
 .PHONY: test
 test:
-	-./hello.sh
-	-./argv.sh
-	-./islower.sh
-	-./jumptable-rtl.sh
-	-$(call arch_dep,./jumptable-libc.sh)
-	-./environ.sh
-	-./codeform.sh
-	-./dwarf-diff.sh
-	-./codeform-dwarf-syms.sh
-	-./codeform-s.sh
-	-./verify-redzone.sh
-	-./codeform-debloat.sh
-	-./hello-process.sh
-	-./hello-thread.sh
-	-./nginx.sh
-	-./nginx-thread.sh
-	-$(call x86_only,./coreutils.sh)
-	-./cout.sh
-	-./sandbox-stage3.sh
+	./run-tests.sh
 
 jt:
 	$(call arch_dep,./jumptable-libc.sh)
