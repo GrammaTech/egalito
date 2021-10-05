@@ -17,37 +17,31 @@ x86_only(){
     fi
 }
 
-aarch64_only(){
-    if [ $(uname -p) == "aarch64" ]; then
-    echo ${1}
-    fi
-}
-
-test_scripts="\
-./hello.sh \
-./argv.sh \
-./islower.sh \
-./jumptable-rtl.sh \
-jumptable-libc.sh $(arch_dep) \
-./environ.sh \
-./codeform.sh \
-./dwarf-diff.sh \
-./codeform-dwarf-syms.sh \
-./codeform-s.sh \
-./verify-redzone.sh \
-./codeform-debloat.sh \
-./hello-process.sh \
-./hello-thread.sh \
-./nginx.sh \
-./nginx-thread.sh \
-$(x86_only ./coreutils.sh) \
-./cout.sh \
-./sandbox-stage3.sh"
+test_scripts=("./hello.sh" 
+    "./argv.sh" 
+    "./islower.sh "
+    "./jumptable-rtl.sh" 
+    "./jumptable-libc.sh $(arch_dep)" 
+    "./environ.sh"
+    "./codeform.sh"
+    "./dwarf-diff.sh" 
+    "./codeform-dwarf-syms.sh"
+    "./codeform-s.sh "
+    "./verify-redzone.sh "
+    "./codeform-debloat.sh "
+    "./hello-process.sh "
+    "./hello-thread.sh "
+    "./nginx.sh "
+    "./nginx-thread.sh "
+    $(x86_only ./coreutils.sh) 
+    "./cout.sh" 
+    "./sandbox-stage3.sh"
+)
 
 all_passed=0
-for _test in $test_scripts;
+for ((i=0; i<${#test_scripts[@]}; i++))
 do
-	((NTESTS++))
+    _test=${test_scripts[$i]}
     echo $_test
     if $_test; then
 	    ((TESTS_PASSED++))
@@ -56,6 +50,6 @@ do
     fi
 done
 
-echo "${TESTS_PASSED} tests passed out of ${NTESTS}\n"
+echo "${TESTS_PASSED} tests passed out of ${#test_scripts[@]}"
 
 exit $all_passed
