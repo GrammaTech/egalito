@@ -1,5 +1,6 @@
 variables:
     GIT_STRATEGY: clone
+    GIT_SUBMODULE_STRATEGY: normal
     DEBIAN_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/debian_buster
     UBUNTU18_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/ubuntu18
     # AARCH64_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/aarch64
