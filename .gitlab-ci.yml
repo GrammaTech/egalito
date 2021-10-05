@@ -69,9 +69,9 @@ coverage:
     - cd src && ENABLE_COVERAGE=1 make || ENABLE_COVERAGE=1 make -j 8 && cd -
     - make all -j 8 
     - lcov -c -i -d src/build_x86_64 -o base.info
-    - cd test/script && make test && cd -
-    - cd test/codegen && make test && cd -
-    - cd test/unit && ./runner && cd -
+    - cd test/script && make test ||  true && cd -
+    - cd test/codegen && make test || true && cd -
+    - cd test/unit && ./runner || true && cd -
     - lcov -c -d src/build_x86_64 -o test.info
     - lcov -a base.info -a test.info -o total.info
     - mkdir coverage
