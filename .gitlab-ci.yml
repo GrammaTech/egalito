@@ -107,6 +107,7 @@ build-debian:
   variables:
     GIT_STRATEGY: none
   stage: test
+  before_script: []
 
 .unit-test-template: &unit-test-template
   <<: *test-template
