@@ -116,11 +116,13 @@ build-debian:
     - ./runner
 
 .codegen-test-template: &codegen-test-template
+  <<: *test-template
   script:
     - cd test/codegen
     - make test
 
 .script-test-template: &script-test-template
+  <<: *test-template
   script:
     - cd test/script
     - make test
