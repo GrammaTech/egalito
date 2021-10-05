@@ -38,7 +38,7 @@ test_scripts=("./hello.sh"
     "./sandbox-stage3.sh"
 )
 
-failed_tests=""
+failed_tests=''
 for ((i=0; i<${#test_scripts[@]}; i++))
 do
     _test=${test_scripts[$i]}
@@ -53,7 +53,7 @@ done
 
 
 echo "${TESTS_PASSED} tests passed out of ${#test_scripts[@]}"
-if [ ! -z failed_tests ]; then
+if [ ! -z $failed_tests ]; then
     echo 'Tests failed:'
     echo $failed_tests
     exit 1
