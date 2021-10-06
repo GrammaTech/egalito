@@ -80,20 +80,27 @@ build-debian:
   <<: *build-template
   image: $DEBIAN_IMAGE
 
-.unit-test-template: &unit-test-template
+
+.test-template: &test-template
+  variables:
+    GIT_STRATEGY: none
   stage: test
+  before_script: [] 
+
+.unit-test-template: &unit-test-template
+  <<: *test-template
   script:
     - cd test/unit
     - ./runner
 
 .codegen-test-template: &codegen-test-template
-  stage: test
+  <<: *test-template
   script:
     - cd test/codegen
     - make test
 
 .script-test-template: &script-test-template
-  stage: test
+  <<: *test-template
   script:
     - cd test/script
     - make test
