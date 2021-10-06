@@ -1,0 +1,101 @@
+variables:
+    GIT_STRATEGY: clone
+    DEBIAN_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/debian_buster
+    UBUNTU18_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/ubuntu18
+    # AARCH64_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/aarch64
+    # ARM_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/egalito/arm
+    DOCKER_DIR: ./test/docker
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
+
+# Gitlab CI doesn't like using ssh to clone repos, 
+# so before the job starts we tell git to use https instead
+# and initialize the submodules ourselves
+default:
+  before_script:
+    - git config --global url.https://github.com/.insteadOf  "git@github.com:"
+    - git config --global url.https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/.insteadOf  "git@gitlab.com:"
+    - git submodule update --init --recursive
+
+
+stages:
+  - check-format
+  - build
+  - test
+
+check-format:
+  stage: check-format
+  image: $UBUNTU18_IMAGE
+  allow_failure: true
+  script:
+    - pre-commit install-hooks
+    - pre-commit run --show-diff-on-failure
+    # helper message for new committers
+    - |+
+      cat <<EOF
+      ================================================================================
+      If this stage fails, the formatting of your changes may be incorrect.
+      To automatically format your files, install pre-commit:
+          pip3 install pre-commit
+          pre-commit install
+      pre-commit will now automatically format any files before commit.
+      To fix any misformatted files, run:
+          pre-commit run --all-files
+      And then commit any changes.
+      More information regarding pre-commit can be found at https://pre-commit.com.
+
+      NOTE FOR PROJECTS WITH C/C++ CODE:
+      pre-commit will by default use the correct version of every formatting tool
+      EXCEPT FOR clang-format. You need to ensure the version of clang-format you
+      use is EXACTLY version 6.0.0. This is available in Ubuntu 18 by default.
+      ================================================================================
+      EOF
+
+.build-template: &build-template
+  stage: build
+  artifacts:
+    paths:
+      - app/
+      - src/
+      - test/
+      - dep/
+      - runtime/
+  # fill in the build image
+  script:
+    - make -j 8
+  rules:
+    - when: always
+
+build-ubuntu18:
+  <<: *build-template
+  image: $UBUNTU18_IMAGE
+
+build-debian:
+  <<: *build-template
+  image: $DEBIAN_IMAGE
+
+.test-template: &test-template
+  variables:
+    GIT_STRATEGY: none
+  stage: test
+  before_script: []
+  script:
+    - cd test/codegen && make test && cd -
+#    - cd test/unit && ./runner && cd -
+#    - cd test/script && make test && cd -
+
+tests-ubuntu18:
+  <<: *test-template
+  needs: [build-ubuntu18]
+  image: $UBUNTU18_IMAGE
+
+tests-debian:
+  <<: *test-template
+  needs: [build-debian]
+  image: $DEBIAN_IMAGE

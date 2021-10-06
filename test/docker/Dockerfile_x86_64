@@ -1,10 +1,9 @@
-FROM debian:testing
-
-MAINTAINER Miguel Arroyo miguel@cs.columbia.edu version: 0.1
+FROM debian:buster
 
 RUN apt-get update && apt-get install -y \
 build-essential \
 lsb-release \
+g++ \
 gdb \
 git \
 gosu \
@@ -12,9 +11,5 @@ libc6-dbg \
 libcapstone-dev \
 libreadline-dev \
 libboost-python-dev \
+unzip \
 && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-CMD ["/bin/bash"]

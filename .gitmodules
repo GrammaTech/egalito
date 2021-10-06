@@ -1,9 +1,9 @@
 [submodule "test/binary"]
 	path = test/binary
-	url = git@gitlab.com:METIS/egalito/egalito-tests
+	url = git@gitlab.com:METIS/egalito/egalito-tests.git
 [submodule "dep/capstone"]
 	path = dep/capstone
-	url = git@gitlab.com:METIS/egalito/egalito-capstone
+	url = git@gitlab.com:METIS/egalito/egalito-capstone.git
 [submodule "dep/distorm3"]
 	path = dep/distorm3
 	url = https://github.com/gdabah/distorm

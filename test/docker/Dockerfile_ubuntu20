@@ -1,0 +1,8 @@
+FROM ubuntu:20.04
+
+RUN apt-get update -y \
+    && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y make \
+    git g++ gdb \
+    libreadline-dev  lsb-release unzip \
+    libc6-dbg libstdc++6-7-dbg
