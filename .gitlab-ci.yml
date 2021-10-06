@@ -80,57 +80,22 @@ build-debian:
   <<: *build-template
   image: $DEBIAN_IMAGE
 
-
 .test-template: &test-template
   variables:
     GIT_STRATEGY: none
   stage: test
-  before_script: [] 
-
-.unit-test-template: &unit-test-template
-  <<: *test-template
+  before_script: []
   script:
-    - cd test/unit
-    - ./runner
+    - cd test/codegen && make test && cd -
+#    - cd test/unit && ./runner && cd -
+#    - cd test/script && make test && cd -
 
-.codegen-test-template: &codegen-test-template
+tests-ubuntu18:
   <<: *test-template
-  script:
-    - cd test/codegen
-    - make test
-
-.script-test-template: &script-test-template
-  <<: *test-template
-  script:
-    - cd test/script
-    - make test
-
-unit-test-ubuntu18:
-  <<: *unit-test-template
   needs: [build-ubuntu18]
   image: $UBUNTU18_IMAGE
 
-codegen-test-ubuntu18:
-    <<: *codegen-test-template
-    needs: [build-ubuntu18]
-    image: $UBUNTU18_IMAGE
-
-script-test-ubuntu18:
-    <<: *script-test-template
-    needs: [build-ubuntu18]
-    image: $UBUNTU18_IMAGE
-
-unit-test-debian:
-  <<: *unit-test-template
+tests-debian:
+  <<: *test-template
   needs: [build-debian]
   image: $DEBIAN_IMAGE
-
-codegen-test-debian:
-    <<: *codegen-test-template
-    needs: [build-debian]
-    image: $DEBIAN_IMAGE
-
-script-test-debian:
-    <<: *script-test-template
-    needs: [build-debian]
-    image: $DEBIAN_IMAGE
