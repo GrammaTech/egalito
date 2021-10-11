@@ -57,8 +57,31 @@ check-format:
       ================================================================================
       EOF
 
+coverage: 
+  stage: build
+  needs: []
+  artifacts:
+    paths:
+      - coverage/
+  image: $UBUNTU18_IMAGE
+  script: 
+    - cd dep && make all && cd -
+    - cd src && ENABLE_COVERAGE=1 make || ENABLE_COVERAGE=1 make -j 8 && cd -
+    - make all -j 8 
+    - lcov -c -i -d src/build_x86_64 -o base.info
+    - cd test/script && make test ||  true && cd -
+    - cd test/codegen && make test || true && cd -
+    - cd test/unit && ./runner || true && cd -
+    - lcov -c -d src/build_x86_64 -o test.info
+    - lcov -a base.info -a test.info -o total.info
+    - lcov --remove total.info "/usr/*" -o egalito.info
+    - mkdir coverage
+    - genhtml -o coverage egalito.info 
+
+
 .build-template: &build-template
   stage: build
+  needs: []
   artifacts:
     paths:
       - app/
