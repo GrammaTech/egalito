@@ -1,4 +1,5 @@
 variables:
+    GIT_SUBMODULE_STRATEGY: recursive
     GIT_STRATEGY: clone
     DEBIAN_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/debian_buster
     UBUNTU18_IMAGE: $DOCKER_REGISTRY/metis/egalito/egalito/ubuntu18
@@ -12,17 +13,6 @@ workflow:
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
       when: never
     - if: '$CI_COMMIT_BRANCH'
-
-
-# Gitlab CI doesn't like using ssh to clone repos, 
-# so before the job starts we tell git to use https instead
-# and initialize the submodules ourselves
-default:
-  before_script:
-    - git config --global url.https://github.com/.insteadOf  "git@github.com:"
-    - git config --global url.https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/.insteadOf  "git@gitlab.com:"
-    - git submodule update --init --recursive
-
 
 stages:
   - check-format
