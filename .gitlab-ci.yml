@@ -19,6 +19,11 @@ stages:
   - build
   - test
 
+.reset_timestamps: &RESET_TIMESTAMPS
+  - echo -e "\e[0Ksection_start:`date +%s`:set_timestamps[collapsed=true]\r\e[0KSetting modification timestamps"
+  - bash .ci/reset-modification-timestamps.sh
+  - echo -e "\e[0Ksection_end:`date +%s`:set_timestamps\r\e[0K"
+
 check-format:
   stage: check-format
   image: $UBUNTU18_IMAGE
@@ -54,7 +59,15 @@ coverage:
     paths:
       - coverage/
   image: $UBUNTU18_IMAGE
-  script: 
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-$CI_JOB_NAME"
+    paths:
+      - src/build_x86_64/*/*.*
+  script:
+    # Make will rebuild a file if the source is newer than the target
+    # Roll back timestamps to last-modified date of each file in git
+    # (Makes gitlab's cache usable)
+    - *RESET_TIMESTAMPS
     - cd dep && make all && cd -
     - cd src && ENABLE_COVERAGE=1 make || ENABLE_COVERAGE=1 make -j 8 && cd -
     - make all -j 8 
@@ -88,19 +101,8 @@ coverage:
   script:
     # Make will rebuild a file if the source is newer than the target
     # Roll back timestamps to last-modified date of each file in git
-    #
-    # script from:
-    # https://stackoverflow.com/questions/2179722/checking-out-old-files-with-original-create-modified-timestamps
-    #
-    # TODO: Move this to a standalone script because it is ugly inline
-    - >-
-      git ls-files --recurse-submodules --full-name | while read FILE; do
-      cd "$(dirname "$FILE")";
-      TIME=$(git log --pretty=format:%cd -n 1 --date=iso "$(basename "$FILE")");
-      TIME2=`echo $TIME | sed 's/-//g;s/ //;s/://;s/:/\./;s/ .*//'`;
-      touch -m -t $TIME2 "$(basename "$FILE")";
-      cd - > /dev/null;
-      done;
+    # (Makes gitlab's cache usable)
+    - *RESET_TIMESTAMPS
     - make -j $(nproc)
   rules:
     - when: always
