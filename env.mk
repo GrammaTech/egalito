@@ -62,7 +62,7 @@ endif
 endif
 
 CAPSTONE_DIR = $(EGALITO_ROOT_DIR)/dep/capstone/install
-GENERIC_FLAGS += -I $(CAPSTONE_DIR)/include
+GENERIC_FLAGS += -isystem $(CAPSTONE_DIR)/include
 ifeq ($(USE_KEYSTONE),1)
 KEYSTONE_DIR = $(EGALITO_ROOT_DIR)/dep/keystone
 GENERIC_FLAGS += -I $(KEYSTONE_DIR)/include

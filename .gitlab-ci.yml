@@ -79,9 +79,29 @@ coverage:
       - test/
       - dep/
       - runtime/
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-$CI_JOB_NAME"
+    paths:
+      - src/build_x86_64/*/*.*
+      - config/config.h
   # fill in the build image
   script:
-    - make -j 8
+    # Make will rebuild a file if the source is newer than the target
+    # Roll back timestamps to last-modified date of each file in git
+    #
+    # script from:
+    # https://stackoverflow.com/questions/2179722/checking-out-old-files-with-original-create-modified-timestamps
+    #
+    # TODO: Move this to a standalone script because it is ugly inline
+    - >-
+      git ls-files --recurse-submodules --full-name | while read FILE; do
+      cd "$(dirname "$FILE")";
+      TIME=$(git log --pretty=format:%cd -n 1 --date=iso "$(basename "$FILE")");
+      TIME2=`echo $TIME | sed 's/-//g;s/ //;s/://;s/:/\./;s/ .*//'`;
+      touch -m -t $TIME2 "$(basename "$FILE")";
+      cd - > /dev/null;
+      done;
+    - make -j $(nproc)
   rules:
     - when: always
 
