@@ -27,10 +27,9 @@ stages:
 check-format:
   stage: check-format
   image: $UBUNTU18_IMAGE
-  allow_failure: true
   script:
     - pre-commit install-hooks
-    - pre-commit run --show-diff-on-failure
+    - pre-commit run --all-files --show-diff-on-failure
     # helper message for new committers
     - |+
       cat <<EOF
