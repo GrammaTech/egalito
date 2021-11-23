@@ -1,3 +1,7 @@
+include:
+- template: Security/SAST.gitlab-ci.yml
+
+
 variables:
     GIT_SUBMODULE_STRATEGY: recursive
     GIT_STRATEGY: clone
@@ -18,6 +22,7 @@ stages:
   - check-format
   - build
   - test
+  - sast
 
 .reset_timestamps: &RESET_TIMESTAMPS
   - echo -e "\e[0Ksection_start:`date +%s`:set_timestamps[collapsed=true]\r\e[0KSetting modification timestamps"
@@ -106,6 +111,7 @@ coverage:
   rules:
     - when: always
 
+
 build-ubuntu18:
   <<: *build-template
   image: $UBUNTU18_IMAGE
@@ -133,3 +139,25 @@ tests-debian:
   <<: *test-template
   needs: [build-debian]
   image: $DEBIAN_IMAGE
+
+sast:
+  stage: sast
+  needs: []
+  variables:
+    SAST_EXCLUDED_PATHS: "dep/capstone, dep/keystone, dep/distorm3, test"
+  before_script:
+    # Convert github SSH submodules to HTTPS to circumvent the need for a GitHub SSH key
+    - echo -e '[url "https://github.com/"]\n    insteadOf = "git@github.com:"' >> ~/.gitconfig
+    - git submodule update --init --recursive
+    # Convert non-unicode files
+    - pip install cvt2utf
+    - cvt2utf cvt src/ -i c cpp -x txt
+    - cvt2utf cvt dep/ -i c cpp -x txt
+  after_script:
+    - python3 .ci/sast_report.py
+  cache: []
+  artifacts:
+    paths:
+      - gl-sast-report.json
+      - sast-report.html
+    expire_in: '1 day'
