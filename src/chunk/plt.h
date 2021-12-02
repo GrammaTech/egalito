@@ -14,6 +14,7 @@ class Chunk;
 class Symbol;
 class ExternalSymbol;
 class ChunkCache;
+class PLTRegistry;
 
 class PLTTrampoline : public ChunkSerializerImpl<TYPE_PLTTrampoline,
     AssignableCompositeChunkImpl<Block>> {
@@ -73,6 +74,16 @@ public:
 private:
     static void parsePLTGOT(RelocList *relocList, ElfMap *elf,
         PLTList *pltList, Module *module);
+private:
+    static PLTList *gt_parse(RelocList *relocList, ElfMap *elf, Module *module);
+    static void parsePLTLazy(const char *sectionName,
+        const size_t sectionOffset, const size_t entrySize,
+        PLTRegistry *registry, ElfMap *elf, PLTList *pltList, Module *module);
+    static void parseEntryLazy(ElfSection *pltSection, address_t entry,
+        ElfXX_Shdr *header, address_t pltAddress, PLTRegistry *registry,
+        PLTList *pltList, Module *module);
+    static void parsePLTNonLazy(const char *sectionName, const size_t entrySize,
+        PLTRegistry *registry, ElfMap *elf, PLTList *pltList, Module *module);
 };
 
 #endif

@@ -19,6 +19,7 @@
 #define R_RISCV_TLS_DTPREL64  9
 #define R_RISCV_TLS_TPREL32  10
 #define R_RISCV_TLS_TPREL64  11
+#define R_RISCV_GOT_HI20     20
 
 #endif
 
