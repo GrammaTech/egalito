@@ -38,29 +38,34 @@ $(BUILDDIR):
 
 .PHONY: depends
 # Generate files whose contents will be passed as arguments to GCC.
-depends: $(BUILDDIR)interpreter $(BUILDDIR)rtld_global_size $(BUILDDIR)rtld_global_ro_size | $(BUILDDIR)
+depends: $(BUILDDIR)interpreter $(BUILDDIR)symbols.gdb $(BUILDDIR)rtld_global_size $(BUILDDIR)rtld_global_ro_size | $(BUILDDIR)
 
 $(BUILDDIR)interpreter: $(BUILDDIR)load_test
 	$(eval INTERPRETER_NAME = $(shell $(READELF) $(READELF_FLAGS) -l $(BUILDDIR)load_test | perl -ne '/\[Requesting program interpreter: (.*)\/(.*)\]/ && print "$$2\n"'))
 	readlink -f $(shell $(CC) --print-file-name=$(INTERPRETER_NAME)) > $@
+$(BUILDDIR)symbols.gdb: $(BUILDDIR)interpreter
+	$(eval INTERPRETER_NAME = $(shell basename `cat $(BUILDDIR)interpreter`))
+	$(eval DEBUG_PATH = $(shell find /usr/lib/debug/ -name $(INTERPRETER_NAME) -print -quit))
+	echo "symbol-file $(DEBUG_PATH)" > $@
+	$(eval RUN_GDB += $(shell if [ "$(DEBUG_PATH)" != "" ]; then echo " -x $(BUILDDIR)symbols.gdb"; fi))
 $(BUILDDIR)rtld_global_size: $(BUILDDIR)interpreter
 	$(READELF) $(READELF_FLAGS) --dyn-syms $(shell cat $(BUILDDIR)interpreter) | grep rtld_global@ | awk '{ print $$3 }' > $@
 $(BUILDDIR)rtld_global_ro_size: $(BUILDDIR)interpreter
 	$(READELF) $(READELF_FLAGS) --dyn-syms $(shell cat $(BUILDDIR)interpreter) | grep rtld_global_ro@ | awk '{ print $$3 }' > $@
 
 $(BUILDDIR)rtld.h: | depends
-	$(RUN_GDB) -x rtld.gdb $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -v 'Reading symbols' \
+	$(RUN_GDB) -x rtld.gdb $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' \
 		| sed 's/struct rtld/struct my_rtld/' > $@
 $(BUILDDIR)pthread.h: | depends
-	$(RUN_GDB) -x pthread.gdb $(LIBC) | grep -v 'done\.' | grep -v "Reading symbols" \
+	$(RUN_GDB) -x pthread.gdb $(LIBC) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' \
 		| sed 's/struct pthread/struct my_pthread/' > $@
 $(BUILDDIR)tcbhead.h: | depends
-	$(RUN_GDB) -x tcbhead.gdb $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -v "Reading symbols" \
+	$(RUN_GDB) -x tcbhead.gdb $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' \
 		| sed 's/tcbhead_t/struct my_tcbhead_t/' \
 		| sed 's/private/my_private/' > $@
 
 $(BUILDDIR)%.c: %.gdb | depends
-	$(RUN_GDB) -x $< $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -v "Reading symbols" > $@
+	$(RUN_GDB) -x $< $(shell cat $(BUILDDIR)interpreter) | grep -v 'done\.' | grep -Ev 'Reading symbols|No debugging symbols' > $@
 ifneq ($(RTLD_EXEC),)
 $(BUILDDIR)rtld_data1.c: test
 	$(RTLD_EXEC) ./test 1 > $@
