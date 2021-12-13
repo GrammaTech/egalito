@@ -3,7 +3,7 @@
 	url = ../egalito-tests.git
 [submodule "dep/capstone"]
 	path = dep/capstone
-	url = ../egalito-capstone.git
+	url = https://github.com/GrammaTech/capstone.git
 [submodule "dep/distorm3"]
 	path = dep/distorm3
 	url = https://github.com/gdabah/distorm.git

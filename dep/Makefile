@@ -47,9 +47,9 @@ capstone:
 	# and instead of chosing the capstone version here we just use
 	# whatever's pinned in the submodule
 	cd capstone && \
-		env CAPSTONE_ARCHS='x86 aarch64' $(MAKE) CROSS=$(CROSS2)
+		env CAPSTONE_ARCHS='x86 aarch64' CAPSTONE_BUILD_CORE_ONLY=yes $(MAKE) CROSS=$(CROSS2)
 	cd capstone && \
-		env CAPSTONE_ARCHS='x86 aarch64' PREFIX=$(CAPSTONE_INSTALL) $(MAKE) CROSS=$(CROSS2) install
+		env CAPSTONE_ARCHS='x86 aarch64' CAPSTONE_BUILD_CORE_ONLY=yes PREFIX=$(CAPSTONE_INSTALL) $(MAKE) CROSS=$(CROSS2) install
 
 ifeq ($(USE_KEYSTONE),1)
 keystone:
